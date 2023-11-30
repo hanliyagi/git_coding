@@ -1,55 +1,72 @@
 #include <iostream>
-#include <iomanip>
+#include <vector>
+#include <fstream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
-int main() {
-	int num;
-
-	cout << "홀수 숫자를 하나 입력해 주세요 : ";
-	cin >> num;
-
-	int** arr = new int*[num];
-	for (int i = 0; i < num; i++) {
-		arr[i] = new int[num];
-		for (int j = 0; j < num; j++)
-			arr[i][j] = 0;
+class FileNotFoundException : public exception {
+	string message;
+public:
+	FileNotFoundException(const string& fname) :
+		message("File \"" + fname + "\" not found") {}
+	virtual const char* what() const throw() {
+		return message.c_str();
 	}
-	
-	int row = 0, col = num / 2, count = 1;
-	while (count <= num * num) {
-		if (arr[row][col] != 0) {
-			row += 2;
-			col -= 1;
-			if (row >= num)
-				row -= num;
-			if (col < 0)
-				col = num - 1;
-			arr[row][col] = count;
-			count++;
+};
+
+vector<vector<int>> read_file(string& fname) {
+	ifstream fin(fname);
+	vector<vector<int>> v(10, vector<int>(10));
+	if (!fin) {
+		throw FileNotFoundException(fname);
+	}
+	else {
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				fin >> v.at(i).at(j);
+			}
 		}
-		else {
-			arr[row][col] = count;
-			count++;
+	}
+	return v;
+}
+int main()
+{
+	ofstream ofs;
+	ofs.open("temp.txt");
+	// 임의의 10x10 행렬 저장 구현
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			ofs << rand() % 101 << " ";
 		}
-		row--;
-		col++;
-		if (row < 0)
-			row = num - 1;
-		if (col >= num)
-			col = 0;
+		ofs << endl;
 	}
+	ofs.close();
 
-	for (int i = 0; i < num; i++) {
-		for (int j = 0; j < num; j++) {
-			cout << setw(4) << arr[i][j] ;
+	// 파일이름 입력tme
+	// 입력받은 파일이름에 맞는 파일을 읽어와 vector로 입력 후, 출력 구현
+	string str;
+	cout << "파일 이름 : ";
+	cin >> str;
+	try {
+		vector<vector<int>> vec = read_file(str);
+		int row, col;
+		cout << "출력할 행 크기 : ";
+		cin >> row;
+		cout << "출력할 열 크기 : ";
+		cin >> col;
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < col; j++) {
+				cout << vec.at(i).at(j) << " ";
+			}
+			cout << endl;
 		}
-		cout << endl;
 	}
-
-	for (int i = 0; i < num; i++) {
-		delete arr[i];
+	catch (exception& e) {
+		cout << "\n" << e.what() << "\n";
 	}
-	delete[] arr;
 
 	return 0;
 }
