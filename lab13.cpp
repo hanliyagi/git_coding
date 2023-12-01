@@ -1,71 +1,136 @@
 #include <iostream>
-#include <vector>
-#include <fstream>
 #include <string>
-#include <cstdlib>
 #include <ctime>
+#include <cstdlib>
+
 using namespace std;
 
-class FileNotFoundException : public exception {
-	string message;
+class Avengers {
 public:
-	FileNotFoundException(const string& fname) :
-		message("File \"" + fname + "\" not found") {}
-	virtual const char* what() const throw() {
-		return message.c_str();
+	Avengers() {
+		name = "";
+		attack_point = 0;
+		defense_point = 0;
+		health = 0;
 	}
+	~Avengers() {}
+	// 캐릭터 설정 함수
+	virtual void set(string _name, int _attack, int _defense, int _health) {}
+	// 공격 함수
+	virtual int attack() { return 0; }
+	// 방어 함수
+	virtual void defense(int _attack_point) { }
+	// 캐릭터 정보 출력 함수
+	virtual void print_info() { }
+protected:
+	string name;		// 캐릭터 이름
+	int attack_point;	// 공격력
+	int defense_point;	// 방어력
+	int health;		// 체력
 };
 
-vector<vector<int>> read_file(string& fname) {
-	ifstream fin(fname);
-	vector<vector<int>> v(10, vector<int>(10));
-	if (!fin) {
-		throw FileNotFoundException(fname);
-	}
-	else {
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 10; j++) {
-				fin >> v.at(i).at(j);
-			}
+class Character : public Avengers {
+public:
+	Character() {
+		srand((unsigned int)time(NULL));
+		int random = rand() % 3;
+		switch (random) {
+		case 0:
+			name = "IronMan";
+			attack_point = 70;
+			defense_point = 40;
+			health = 100;
+			break;
+		case 1:
+			name = "CaptainAmerica";
+			attack_point = 60;
+			defense_point = 50;
+			health = 100;
+			break;
+		case 2:
+			name = "Thor";
+			attack_point = 80;
+			defense_point = 30;
+			health = 100;
+			break;
 		}
 	}
-	return v;
-}
-int main()
-{
-	ofstream ofs;
-	ofs.open("temp.txt");
-	// 임의의 10x10 행렬 저장 구현
-	srand((unsigned)time(NULL));
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			ofs << rand() % 101 << " ";
-		}
-		ofs << endl;
-	}
-	ofs.close();
 
-	// 파일이름 입력tme
-	// 입력받은 파일이름에 맞는 파일을 읽어와 vector로 입력 후, 출력 구현
-	string str;
-	cout << "파일 이름 : ";
-	cin >> str;
-	try {
-		vector<vector<int>> vec = read_file(str);
-		int row, col;
-		cout << "출력할 행 크기 : ";
-		cin >> row;
-		cout << "출력할 열 크기 : ";
-		cin >> col;
-		for (int i = 0; i < row; i++) {
-			for (int j = 0; j < col; j++) {
-				cout << vec.at(i).at(j) << " ";
-			}
-			cout << endl;
+	Character(string character) {
+		if (character == "IronMan") {
+			name = "IronMan";
+			attack_point = 70;
+			defense_point = 40;
+			health = 100;
+		}
+		else if (character == "CaptainAmerica") {
+			name = "CaptainAmerica";
+			attack_point = 60;
+			defense_point = 50;
+			health = 100;
+		}
+		else if (character == "Thor") {
+			name = "Thor";
+			attack_point = 80;
+			defense_point = 30;
+			health = 100;
 		}
 	}
-	catch (exception& e) {
-		cout << "\n" << e.what() << "\n";
+	~Character() {}
+	
+	int attack() override {
+		return attack_point;
+	}
+
+	void defense(int _attack_point) override {
+		health += (defense_point - _attack_point);
+		if (health < 0)
+			health = 0;
+	}
+
+	void print_info() override {
+		cout << "Name: " << name << endl;
+		cout << "Attack_Point: " << attack_point << endl;
+		cout << "Defense_Point: " << defense_point << endl;
+		cout << "Health: " << health << endl;
+	}
+	int get_health() { return health; }
+};
+
+int main() {
+	Character my_char;
+	Character enemy_char;
+	string MyChar;
+
+	cout << "Choose your charactr(IronMan, CaptainAmerica, Thor): ";
+	cin >> MyChar;
+
+	cout << "--My Character--" << endl;
+	my_char = Character(MyChar);
+	my_char.print_info();
+	cout << "--Enemy Character--" << endl;
+	enemy_char.print_info();
+
+	cout << endl << "--Battle--" << endl;
+	cout << "My Life: " << my_char.get_health() << "\t"
+		<< "Enemy Life:" << enemy_char.get_health() << endl;
+
+	while (1) {
+		enemy_char.defense(my_char.attack());
+		cout << "My Life: " << my_char.get_health() << "\t"
+			<< "Enemy Life:" << enemy_char.get_health() << endl;
+		if (enemy_char.get_health() <= 0) {
+			cout << "You Win!" << endl;
+			return 0;
+		}
+
+		my_char.defense(enemy_char.attack());
+		cout << "My Life: " << my_char.get_health() << "\t"
+			<< "Enemy Life:" << enemy_char.get_health() << endl;
+		if (my_char.get_health() <= 0) {
+			cout << "You Lose!" << endl;
+			return 0;
+		}
 	}
 
 	return 0;
