@@ -4,9 +4,6 @@
 #include <fstream>
 using namespace std;
 
-//예외처리: try/catch구문, throw문
-//1. 예외가 발생하는 부분을 try에 넣는다
-//2. 예외가 발생하면 catch 구문이 실행된다
 class FileNotFoundException : public exception {
 	string message;
 public:
