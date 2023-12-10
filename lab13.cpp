@@ -1,66 +1,25 @@
 #include <iostream>
-
 using namespace std;
 
-class Human {
-private:
-	int age;
-	char name[10];
-	char hobby[20];
+class Parent{
 public:
-	Human(int _age, char * _name, char * _hobby) : age(_age)
-	{
-		strcpy(name, _name);
-		strcpy(hobby, _hobby);
-	}
-	void getup()
-	{
-		cout << "기상!" << endl;
-	}
-	void sleep()
-	{
-		cout << "취침!" << endl;
-	}
-	void eat()
-	{
-		cout << "식사!" << endl;
-	}
-	void study()
-	{
-		cout << "공부!" << endl;
-	}
-	void showInfo()
-	{
-		cout << "이름: " << name << endl;
-		cout << "나이: " << age << endl;
-		cout << "취미: " << hobby << endl;
-	}
+    void print() {
+        cout << "이곳은 Parent입니다." << endl;
+    }
 };
 
-class Student : public Human {
-private:
-	char school[30];
+class Child : public Parent{
 public:
-	Student(int _age, char * _name, char * _hobby, char * _school) : Human(_age, _name, _hobby)
-	{
-		strcpy(school, _school);
-	}
-	void schoolInfo()
-	{
-		showInfo();
-		cout << "소속 학교: " << school << endl;
-	}
+    void print() {
+        cout << "이곳은 Child입니다." << endl;
+    }
 };
 
-int main()
-{
-	Student stu(18, "김철수", "프로그래밍", "자바고등학교");
-
-	stu.schoolInfo();
-	stu.getup();
-	stu.eat();
-	stu.study();
-	stu.sleep();
-
-	return 0;
+void main() {
+    Parent* p = new Parent;
+    Child* c = new Child;
+    
+    p->print();
+    p = c;
+    p->print();
 }
