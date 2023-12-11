@@ -1,25 +1,25 @@
 #include <iostream>
+#include <string>
+
 using namespace std;
 
-class Parent{
-public:
-    void print() {
-        cout << "이곳은 Parent입니다." << endl;
-    }
-};
+int main() {
 
-class Child : public Parent{
-public:
-    void print() {
-        cout << "이곳은 Child입니다." << endl;
-    }
-};
+	string s;
+	int res = 1;
 
-void main() {
-    Parent* p = new Parent;
-    Child* c = new Child;
-    
-    p->print();
-    p = c;
-    p->print();
+	getline(cin, s);
+
+	if (s.length() == 1 && s[0] == ' ') {
+		cout << 0;
+		return 0;
+	}
+
+	for (int i = 1; i < s.length() - 1; i++) {
+		if (s[i] == ' ') res++;
+	}
+
+	cout << res;
+
+	return 0;
 }
