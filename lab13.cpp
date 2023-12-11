@@ -1,25 +1,57 @@
 #include <iostream>
 #include <string>
-
 using namespace std;
 
 int main() {
+    string dial;
+    cin >> dial;
+    int len = dial.length(), count = 0;
 
-	string s;
-	int res = 1;
-
-	getline(cin, s);
-
-	if (s.length() == 1 && s[0] == ' ') {
-		cout << 0;
-		return 0;
-	}
-
-	for (int i = 1; i < s.length() - 1; i++) {
-		if (s[i] == ' ') res++;
-	}
-
-	cout << res;
-
-	return 0;
+    for (int i = 0; i < len; i++) {
+        switch (dial[i]) {
+        case 'A':
+        case 'B':
+        case 'C':
+            count += 3;
+            break;
+        case 'D':
+        case 'E':
+        case 'F':
+            count += 4;
+            break;
+        case 'G':
+        case 'H':
+        case 'I':
+            count += 5;
+            break;
+        case 'J':
+        case 'K':
+        case 'L':
+            count += 6;
+            break;
+        case 'M':
+        case 'N':
+        case 'O':
+            count += 7;
+            break;
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+            count += 8;
+            break;
+        case 'T':
+        case 'U':
+        case 'V':
+            count += 9;
+            break;
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+            count += 10;
+            break;
+        }
+    }
+    cout << count;
 }
